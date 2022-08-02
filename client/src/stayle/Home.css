@@ -1,0 +1,41 @@
+.container-container{
+   
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-left: 90px; */
+    width: 100%;
+}
+.Filtros{
+    display: flex;
+    margin-left: 80px;
+    height: 30px;
+    margin-top: 15px;
+    cursor: pointer;
+    border-radius: 4px ;
+    
+}
+.Paginado{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    cursor: pointer
+}
+.TodoHome{
+    background-image: url("../components/Img/igor-karimov-9AmKnNZw3GA-unsplash.jpg");
+    height: 400vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin: auto;
+    background-attachment: fixed;
+    
+}
+.filtroApi{
+    color:  black;
+    font-weight:bold;
+    display: flex;
+    background-color: #ff013c;
+    border-radius: 10px;
+    padding: 4px;
+
+}

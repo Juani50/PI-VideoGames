@@ -1,0 +1,61 @@
+.loader span {
+    font-size: 40px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    animation: blur 3s linear infinite;
+    line-height: 20px;
+    transition: all 0.5s;
+    letter-spacing: 0.2em;
+    /* display: flex; */
+    height: 100%;
+    width: 100vh;
+    justify-content: center;
+    /* margin-right: 80px; */
+    margin-top: 50px;
+   }
+   .loader{  
+    
+    height: 20vh;
+    width: 100vh;
+    /* justify-content: center; */
+    margin-top: 40vh;
+    margin-left:15vh;
+    }
+ 
+   @keyframes blur {
+    0%, 90% {
+     filter: blur(0);
+    }
+   
+    50% {
+     filter: blur(10px);
+    }
+   }
+   .containerDetail{
+    width: 800px;
+    height: 600px;
+    background-color: #7843b8;
+    margin-left: 280px;
+    padding: 5px;
+    margin-top: 5px;
+   }
+   .detalle{
+    display: flex;
+    flex-direction: column;
+   }
+   .columnas{
+    display: flex;
+    flex-direction: row;
+    margin-top: -20px;
+   }
+   .description{
+    margin-top: -20px;
+   }
+   .detalleLan{
+    margin-left: 40px;
+    margin-top: 20px;
+   }
+   .imagenDeta{
+    margin-top: 10px;
+   }
+   

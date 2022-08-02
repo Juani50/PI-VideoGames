@@ -1,0 +1,28 @@
+.Nav{
+    display: flex;
+    background-color: black
+
+}
+.Busqueda{
+    height: 30px;
+    margin-left: 300px ;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.Busqueda2{
+    height: 36px;
+    margin-top: 20px;
+    padding: 10px;
+}
+.Created{
+    margin-left: 350px;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+.TituloNav{
+    margin-left: 30px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
+    color: #ff013c;
+    
+}

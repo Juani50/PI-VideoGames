@@ -1,0 +1,26 @@
+.card{
+    border-radius: 10px;
+    box-shadow: 4px 4px 8px 4px rgba(0,0,0,0.2);
+    transform: 2s;
+    transition: 0.6s;
+    width: 400px;
+    padding-top: 10px;
+    margin-top: 10px;
+    margin-left: 35px;
+    backdrop-filter: blur(10px);
+    
+}
+
+.card > img{
+    width: 300px;
+    height: 250px;
+
+}
+.card:hover{
+   transform: scale(1.05);
+}
+.nameGenres{
+    color:  #ff013c;
+    margin-bottom: 5px;
+    
+}

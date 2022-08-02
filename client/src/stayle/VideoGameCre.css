@@ -1,0 +1,27 @@
+.form1{
+    background-image: url("../components/Img/pragii-pX829a6ObhE-unsplash.jpg");
+    width: 649px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    margin-left: 700px;
+    height: 650px;
+    margin-top: -525px;
+}
+
+.todoForm{
+    background-color:#7843b8;
+    width: 700px;
+    height: 635px;
+}
+.errorName{
+    color: red;
+}
+.form{
+    margin-top: 20px;
+}
+.botonCre{
+    margin-top: 60px;
+}
