@@ -1,34 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { postVideogames, getGenres } from "../action";
+import { postVideogames, getGenres} from "../action";
 import { useDispatch, useSelector } from "react-redux";
-import "../stayle/VideoGameCre.css"
+import "../stayle/VideoGameCre.css";
 
 const urlImg = (url) => {
   return /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(url);
 };
-const validateForm = (input) => {
+const rele = (rel) => {
+  return /^([0-2][0-9,$]|3[0-1])(\/|-)(0[1-9,$]|1[0-2])\2(\d{4})$/.test(rel);
+};
+const validateForm = (e) => {
   const error = {};
-
-  if (input.name.length < 3) {
-    error.name = "El nombre tiene que tener al menos 3 caracteres";
-  }
-  if (input.name.length > 15) {
+  
+  if (e.name.length > 15) {
     error.name = "El nombre tiene que tener menos de 15 caracteres";
-  } else if (!/^[A-Z][a-z_-]{3,19}$/.test(input.name)) {
-    error.name ="El nombre debe ser en mayuscula"
+  } else if (!/^[A-Z][a-z_-]{3,19}$/.test(e.name)) {
+    error.name = "El nombre debe ser en mayuscula y tener mas de 3 caracteres";
   }
-  if (!input.name) {
+  if (!e.name) {
     error.name = "El nombre es requerido";
-  } else if (!input.description) {
+  }  if (!e.description) {
     error.description = "La descripción es requerida";
-  } else if (!urlImg(input.image)) {
+  }  if (e.description.length > 300) {
+    error.description = "La descripcion deben ser menos de 100 caracteres";
+  }  if (!urlImg(e.image)) {
     error.image = "La URL no es valida";
-  } else if (input.genres.length === 0) {
+  }  if (!e.genres.length ) {
     error.genres = "Es requerido al menos un genero";
-  } else if (input.parent_platforms.length === 0) {
+  }  if (!e.parent_platforms.length) {
     error.parent_platforms = "Es requerido al menos una plataforma";
+  }  if (!e.rating) {
+    error.rating = "El rating debe ser entre 1 y 5";
+  } if (!rele(e.released)) {
+    error.released = "La fecha no es valida";
   }
+  console.log("error", error)
+  console.log("genres", e.genres)
+ 
   return error;
 };
 
@@ -158,7 +167,7 @@ export default function VideoGameCreate() {
     description: "",
     parent_platforms: [],
     rating: 0,
-    released: 0,
+    released: "",
     image: "",
     genres: [],
   });
@@ -166,12 +175,26 @@ export default function VideoGameCreate() {
   const btnDisabled = !(
     input.name &&
     input.description &&
+    input.rating &&
+    input.released &&
     input.image &&
-    input.parent_platforms.length&&
+    input.parent_platforms.length &&
     input.genres.length
   );
 
   function handleChange(e) {
+    if (!error.name || !error.released || !error.rating || !error.image) {
+      setInput({
+        ...input,
+        [e.target.name]: e.target.value,
+      });
+      setErrors(
+        validateForm({
+          ...input,
+          [e.target.name]: e.target.value,
+        })
+      );
+    }
     setInput({
       ...input,
       [e.target.name]: e.target.value,
@@ -182,49 +205,91 @@ export default function VideoGameCreate() {
         [e.target.name]: e.target.value,
       })
     );
+    console.log( "change",e.target.value );
   }
   const handleInput = (event) => {
-    if(!input.genres.includes(event.target.value) || !input.parent_platforms.includes(event.target.value)){
+    if (!input.genres.includes(event.target.value)) {
+      if (event.target.name === "genres") {
+        const array = input[event.target.name];
+        setInput({
+          ...input,
+          [event.target.name]: array.concat(event.target.value),
+        });
+      } else {
+        setInput({
+          ...input,
+          [event.target.name]: event.target.value,
+        });
+      }
+      setErrors(
+        validateForm({
+          ...input,
+          genres: [...input.genres, event.target.value],
+        })
+      );
+      return;
+    }
+    alert("No se pueden repetir los generos");
+  };
+  const handlePlatforms = (e) => {
     if (
-      event.target.name === "genres" ||
-      event.target.name === "parent_platforms"
+      e.target.value !== "DEFAULT" &&
+      !input.parent_platforms.includes(e.target.value)
     ) {
-      const array = input[event.target.name];
       setInput({
         ...input,
-        [event.target.name]: array.concat(event.target.value),
+        parent_platforms: [...input.parent_platforms, e.target.value],
       });
-    } else {
-      setInput({
-        ...input,
-        [event.target.name]: event.target.value,
-      });
+      setErrors(
+        validateForm({
+          ...input,
+          parent_platforms:[...input.parent_platforms, e.target.value],
+        })
+      );
+      return;
     }
-      return
-    }
-    alert("No se pueden repetir las opciones")
+    alert("No se pueden repetir las plataformas");
   };
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(postVideogames(input));
-    alert("Se creo el videojuego!");
-    setInput({
-      name: "",
-      description: "",
-      parent_platforms: [],
-      rating: 0,
-      released: 0,
-      image: "",
-      genres: [],
-    });
+    if (input.name && input.description && input.released && input.image && input.parent_platforms.length > 0 && input.genres.length > 0 ) {
+      dispatch(postVideogames(input));
+      alert("Se creo el videojuego!");
+      setInput({
+        name: "",
+        description: "",
+        parent_platforms: [],
+        rating: 0,
+        released: "",
+        image: "",
+        genres: [],
+      });
+    } else {
+      alert("Faltan completar datos");
+    }
+    console.log(input)
   }
+  const handleOnErrors = (e) => {
+    console.log('val', e.target.value)
+    e.preventDefault();
+    setErrors(validateForm({
+        ...input,
+    }))
+    handleSubmit(e)
+};
 
   const handleDelete = (e, option) => {
     setInput({
       ...input,
       [option]: input[option].filter((data) => data !== e),
     });
+    setErrors(
+      validateForm({
+        ...input,
+        [option]: input[option].filter((data) => data !== e),
+      })
+    );
   };
 
   useEffect(() => {
@@ -233,115 +298,136 @@ export default function VideoGameCreate() {
 
   return (
     <div className="todoForm">
-      <Link to="/home">
-        <button>Volver</button>
-      </Link>
-      <h1 className="tituloForm">Crea el mejor Videojuego!</h1>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="form">
-          <label>Nombre: </label>
-          <input
-            type="text"
-            value={input.name}
-            name="name"
-            onChange={handleChange}
-          />
+      <div>
+        <div className="botonReg">
+          <Link to="/home">
+            <button className="botonVol">Regresar</button>
+          </Link>
         </div>
-        {error.name && <span className="errorName">{error.name}</span>}
-        <div className="form">
-          <label>Descripción: </label>
-          <input
-            type="text"
-            value={input.description}
-            name="description"
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
-        {error.description && <span>{error.description}</span>}
-        <div className="form" >
-          <label>Rating: </label>
-          <input
-            type="number"
-            min="1"
-            max="5"
-            value={input.rating}
-            name="rating"
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
-        <div className="form">
-          <label>Lanzamiento: </label>
-          <input
-            type="text"
-            value={input.released}
-            name="released"
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
-        {error.released && <span>{error.released}</span>}
-        <div className="form">
-          <label>Imagen: </label>
-          <input
-            type="text"
-            value={input.image}
-            name="image"
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
-        {error.image && <span>{error.image}</span>}
-        <div className="form">
-          <label htmlFor="parent_platforms">Plataformas: </label>
-          <select name="parent_platforms" onChange={(e) => handleInput(e)}>
-            <option disabled value="DEFAULT">
-              Seleccionar
-            </option>
-            {parent_platforms.map((plt) => (
-              <option key={plt.id} value={plt.name}>
-                {plt.name}
+        <h1 className="tituloForm">Crea el mejor Videojuego!</h1>
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <div className="form">
+            <label>Nombre: </label>
+            <input
+              type="text"
+              value={input.name}
+              name="name"
+              onChange={handleChange}
+            />
+          </div>
+          {error.name && <span className="errorName">{error.name}</span>}
+          <div className="form">
+            <label>Descripción: </label>
+            <input
+              type="text"
+              value={input.description}
+              name="description"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          {error.description && (
+            <span className="errorName">{error.description}</span>
+          )}
+          <div className="form">
+            <label>Rating: </label>
+            <input
+              type="number"
+              min="1"
+              max="5"
+              value={input.rating}
+              name="rating"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          {error.rating && <span className="errorName">{error.rating}</span>}
+          <div className="form">
+            <label>Lanzamiento: </label>
+            <input
+              type="text"
+              value={input.released}
+              name="released"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          {error.released && (
+            <span className="errorName">{error.released}</span>
+          )}
+          <div className="form">
+            <label>Imagen: </label>
+            <input
+              type="text"
+              value={input.image}
+              name="image"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          {error.image && <span className="errorName">{error.image}</span>}
+          <div className="form">
+            <label htmlFor="parent_platforms">Plataformas: </label>
+            <select
+              name="parent_platforms"
+              onChange={(e) => handlePlatforms(e)}
+            >
+              <option default onFocus value="DEFAULT">
+                Seleccionar
               </option>
-            ))}
-          </select>
-          <div>
-            <div className="divX">
-              {input.parent_platforms.map((e) => (
-                <div key={e} className="divX2">
-                  <p>{e}</p>
-                  <button className="botonX" onClick={() => handleDelete(e, "parent_platforms")}>
-                    x
-                  </button>
-                </div>
+              {parent_platforms.map((plt) => (
+                <option key={plt.id} value={plt.name}>
+                  {plt.name}
+                </option>
               ))}
+            </select>
+            <div>
+              <div className="divPlt">
+                {input.parent_platforms.map((e) => (
+                  <div key={e}>
+                    <p className="plt">{e}</p>
+                    <button
+                      className="botonX"
+                      onClick={() => handleDelete(e, "parent_platforms")}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        {error.parent_platforms && <span>{error.parent_platforms}</span>}
-        <div className="form">
-          <label>Generos: </label>
-          <select name="genres" onChange={(e) => handleInput(e)}>
-            <option disabled>Seleccionar</option>
-            {genres.map((genres) => (
-              <option value={genres.name}>{genres.name}</option>
-            ))}
-          </select>
+          {error.parent_platforms && (
+            <span className="errorName">{error.parent_platforms}</span>
+          )}
           <div>
-            <div className="divX">
-              {input.genres.map((e) => (
-                <div key={e} className="divX2">
-                  <p>{e}</p>
-                  <button className="botonX" onClick={() => handleDelete(e, "genres")}>
-                    x
-                  </button>
-                </div>
+            <label>Generos: </label>
+            <select name="genres" onChange={(e) => handleInput(e)}>
+              <option default onFocus value="DEFAULT">Seleccionar</option>
+              {genres.map((genres) => (
+                <option value={genres.name}>{genres.name}</option>
               ))}
+            </select>
+            <div>
+              <div className="divPlt">
+                {input.genres.map((e) => (
+                  <div key={e}>
+                    <p className="plt">{e}</p>
+                    <button
+                      className="botonX"
+                      onClick={() => handleDelete(e, "genres")}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
+                {error.genres && (
+                  <span className="errorName">{error.genres}</span>
+                )}
             </div>
           </div>
-        </div>
-        <button className="botonCre" disabled={btnDisabled} type="submit">
-          Crear Vidoejuego
-        </button>
-      </form>
-      <div className="form1"></div>
+          <button className="botonCre" onClick={(e)=>handleOnErrors(e)}  type="submit">
+            Crear Vidoejuego
+          </button>
+        </form>
+      </div>
     </div>
-    
   );
 }

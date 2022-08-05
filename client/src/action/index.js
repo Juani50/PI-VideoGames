@@ -86,10 +86,13 @@ export function filterDB(payload) {
   };
 }
 export function resetDetail(){
-  return {
-    type: "RESET_DETAIL",
+  return{
+    type:"RESET_DETAIL",
     payload: []
 
   }
+  
 }
+
+
 

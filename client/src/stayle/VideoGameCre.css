@@ -1,20 +1,24 @@
 .form1{
     background-image: url("../components/Img/pragii-pX829a6ObhE-unsplash.jpg");
-    width: 649px;
+    width: auto;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    /* background-attachment: fixed; */
     display: flex;
     flex-direction: column;
-    margin-left: 700px;
-    height: 650px;
-    margin-top: -525px;
+    margin-left: auto;
+    height: auto;
+    margin-top: auto;
+    position: absolute;
+    position: relative;
 }
 
 .todoForm{
     background-color:#7843b8;
-    width: 700px;
-    height: 635px;
+    width: 1350px;
+    height: auto;
+    
 }
 .errorName{
     color: red;
@@ -24,4 +28,30 @@
 }
 .botonCre{
     margin-top: 60px;
+}
+.botonVol{
+    margin-right: 1000px;
+    margin-top: 20px;
+    
+    
+}
+/* .botonReg{
+    height: 300px;
+    width: 100px;
+    background-color: blue;
+} */
+.divPlt{
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    /* background-color: aqua; */
+    
+    margin-top: 5px;
+    /* margin-left: 600px; */
+    /* color: transparent; */
+}
+.plt{
+    margin-left: 20px;
+    color: yellow;
+    font-weight:bold;
 }

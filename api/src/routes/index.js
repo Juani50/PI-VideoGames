@@ -14,42 +14,43 @@ router.get("/videogames", async (req, res, next) => {
   try {
     let nombre = req.query.name;
 
-   if(nombre){
-    const respuestaAPi = await axios.get(
-      `https://api.rawg.io/api/games?search=${nombre}&key=f439a0ce73734df19bcff643b05e69a9`
-    );
-    const prueba = respuestaAPi.data.results.map((game) => {
-      return {
-        id: game.id,
-        name: game.name,
-        parent_platforms: game.parent_platforms?.map(
-          (plt) => plt.platform.name
-        ),
-        released: game.released,
-        rating: game.rating,
-        genres: game.genres.map((g) => {
-          return {
-            id: g.id,
-            name: g.name,
-          };
-        }),
-        image: game.background_image,
-      };
-    });
-    // base de datos
-    const resDbVideogames = await Videogame.findAll({
-      include: {
-        model: Genres,
-        attributes: ["id", "name"],
-        through: { attributes: [] },
-      },
-    });
-    let pepe = resDbVideogames.filter((n) =>
-      n.name.toLowerCase().includes(nombre.toLowerCase())
-    );
+    if (nombre) {
+      const respuestaAPi = await axios.get(
+        `https://api.rawg.io/api/games?search=${nombre}&key=f439a0ce73734df19bcff643b05e69a9`
+      );
+      const prueba = respuestaAPi.data.results.map((game) => {
+        return {
+          id: game.id,
+          name: game.name,
+          parent_platforms: game.parent_platforms?.map(
+            (plt) => plt.platform.name
+          ),
+          released: game.released,
+          rating: game.rating,
+          genres: game.genres.map((g) => {
+            return {
+              id: g.id,
+              name: g.name,
+            };
+          }),
+          image: game.background_image,
+        };
+      });
+      // base de datos
+      const resDbVideogames = await Videogame.findAll({
+        include: {
+          model: Genres,
+          attributes: ["id", "name"],
+          through: { attributes: [] },
+        },
+      });
+      let pepe = resDbVideogames.filter((n) =>
+        n.name.toLowerCase().includes(nombre.toLowerCase())
+      );
 
-    let resultadoFinal = [...pepe, ...prueba];
-    return res.json(resultadoFinal.slice(0, 16));}
+      let resultadoFinal = [...pepe, ...prueba];
+      return res.json(resultadoFinal.slice(0, 16));
+    }
     // api
     const res1 = await axios.get(
       `https://api.rawg.io/api/games?key=f439a0ce73734df19bcff643b05e69a9&page_size=33`
@@ -93,7 +94,7 @@ router.get("/videogames", async (req, res, next) => {
           image: game.background_image,
         };
       });
- 
+
       let resultFinal = [...DbVideogames, ...apiResp];
       return res.send(resultFinal);
     } else {
@@ -101,7 +102,7 @@ router.get("/videogames", async (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    next(error)
+    next(error);
   }
 });
 
@@ -142,7 +143,7 @@ router.post("/videogames", async (req, res) => {
       description,
       rating,
       released,
-      genres
+      genres,
     });
     let arrGenres = await Genres.findAll({ where: { name: genres } });
     // let arrayGen = await arrGenres.filter((g) =>
@@ -165,7 +166,7 @@ router.get("/videogames/:id", async (req, res) => {
       let game = {
         id: videoAPI.id,
         name: videoAPI.name,
-        description: videoAPI.description.replace(/<[^>]*>?/gm, ''),
+        description: videoAPI.description.replace(/<[^>]*>?/gm, ""),
         rating: videoAPI.rating,
         parent_platforms: videoAPI.parent_platforms?.map(
           (plt) => plt.platform.name
@@ -175,7 +176,7 @@ router.get("/videogames/:id", async (req, res) => {
             name: g.name,
           };
         }),
-        
+
         image: videoAPI.background_image,
         release_date: videoAPI.released,
       };
@@ -201,5 +202,8 @@ router.get("/videogames/:id", async (req, res) => {
     res.status(404).send(error);
   }
 });
+
+
+
 
 module.exports = router;

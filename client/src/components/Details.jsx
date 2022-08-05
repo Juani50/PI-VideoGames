@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getDetail, resetDetail } from "../action";
+import { getDetail, resetDetail} from "../action";
 import { useEffect } from "react";
 import "../stayle/Detail.css";
 
@@ -11,8 +11,8 @@ export default function Detail(props) {
   useEffect(() => {
     dispatch(getDetail(props.match.params.id));
     return () => {
-      dispatch(resetDetail());
-    };
+      dispatch(resetDetail())
+    }
   }, [dispatch]);
 
   const gameDetail = useSelector((state) => state.detail);
@@ -70,3 +70,6 @@ export default function Detail(props) {
     </div>
   );
 }
+
+
+

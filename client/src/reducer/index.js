@@ -2,8 +2,8 @@ const initialState = {
   videoGames: [],
   allVideogames: [],
   genres: [],
-  detail: [],
   platforms: [],
+  detail:[]
 };
 
 function rootReducer(state = initialState, action) {
@@ -21,7 +21,7 @@ function rootReducer(state = initialState, action) {
         genres: action.payload,
       };
     case "FILTER_GENRES":
-      // if("all"){return state.allVideogames}
+      // if(action.payload === "all") {return state.allVideogames}
       let newArrFilter = state.allVideogames.filter((p) => {
         var flag = false;
         p.genres.forEach((element) => {
@@ -34,7 +34,8 @@ function rootReducer(state = initialState, action) {
 
       return {
         ...state,
-        videoGames: [...newArrFilter],
+
+        videoGames: action.payload === "all"? state.allVideogames : [...newArrFilter],
       };
     case "ORDER_BY_GAME":
       let sortedArr =
@@ -59,7 +60,7 @@ function rootReducer(state = initialState, action) {
             });
       return {
         ...state,
-        videoGames: sortedArr,
+        videoGames: action.payload === "DEFAULT" ? state.allVideogames  : sortedArr,
       };
     case "ORDER_BY_RATING":
       let sortedP =
@@ -115,7 +116,7 @@ function rootReducer(state = initialState, action) {
           return{
             ...state
           }
-          case "RESET_DETAIL":
+      case "RESET_DETAIL":
         return{
           ...state,
           detail: action.payload

@@ -33,7 +33,7 @@
    }
    .containerDetail{
     width: 800px;
-    height: 600px;
+    height: auto;
     background-color: #7843b8;
     margin-left: 280px;
     padding: 5px;
